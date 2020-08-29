@@ -7,8 +7,8 @@ const jwtAuth = expressJwt({
   algorithms: ["HS256"],
   credentialsRequired: true,
   getToken: (req) => {
-    if (req.headers.authorization) {
-      return req.headers.authorization
+    if (req.headers['x-token']) {
+      return req.headers['x-token']
     } else if (req.query && req.query.token) {
       return req.query.token
     }
@@ -24,7 +24,7 @@ const jwtAuth = expressJwt({
 
 // jwt-token解析
 function decode(req) {
-  const token = req.get('Authorization')
+  const token = req.get('X-Token')
   return jwt.verify(token, PRIVATE_KEY)
 }
 

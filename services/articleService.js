@@ -110,17 +110,112 @@ function getArticalList(req, res, next) {
     })
   }
 }
+/**
+ * @description: 获取文章详情
+ * @param {type} 
+ * @return {type} 
+ */
+function getArticleDetail(req, res, next) {
+  const err = validationResult(req);
+  if (!err.isEmpty()) {
+    const [{ msg }] = err.errors;
+    next(boom.badRequest(msg));
+  } else {
+    let { id } = req.query
+    const query = `select * from article where id='${id}'`
+    querySql(query).then(data => {
+      if (!data || data.length === 0) {
+        res.json({
+          code: CODE_ERROR,
+          msg: '查询失败',
+          data: null
+        })
+      } else {
+        res.json({
+          code: CODE_SUCCESS,
+          msg: '查询成功',
+          data: data
+        })
+      }
+    })
+  }
+}
+/**
+ * @description: 修改文章
+ * @param {type} 
+ * @return {type} 
+ */
+ function modifyArticle(req, res, next) {
+  const err = validationResult(req);
+  if (!err.isEmpty()) {
+    const [{ msg }] = err.errors;
+    next(boom.badRequest(msg));
+  } else {
+    let { id, title, content, } = req.body
+    const query = `update article set title='${title}', content='${content}' where id='${id}'`
+    querySql(query).then(data => {
+      if (!data || data.length === 0) {
+        res.json({
+          code: CODE_ERROR,
+          msg: '修改失败',
+          data: null
+        })
+      } else {
+        res.json({
+          code: CODE_SUCCESS,
+          msg: '修改成功',
+          data: null
+        })
+      }
+    })
+  }
+}
+/**
+ * @description: 删除文章
+ * @param {type} 
+ * @return {type} 
+ */
+function delArticle(req, res, next) {
+  const err = validationResult(req)
+  if (!err.isEmpty()) {
+    const [{ msg }] = err.errors;
+    next(boom.badRequest(msg));
+  } else {
+    let { id } = req.query
+    const query = `delete from article where id='${id}'`
+    querySql(query).then(data => {
+      if (!data || data.length === 0) {
+        res.json({
+          code: CODE_ERROR,
+          msg: '删除失败',
+          data: null
+        })
+      } else {
+        res.json({
+          code: CODE_SUCCESS,
+          msg: '删除成功',
+          data: null
+        })
+      }
+    })
+  }
+}
 
 /**
  * @description: 查询文章是否存在
  * @param {type} 
  * @return {type} 
  */
-function findArticle() {
-
+function findArticle(param) {
+  let query = null;
+  query = `select id from article where id='${param}'`;
+  return queryOne(query);
 }
 
 module.exports = {
   addArticle,
-  getArticalList
+  getArticalList,
+  getArticleDetail,
+  modifyArticle,
+  delArticle
 }
